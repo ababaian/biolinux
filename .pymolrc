@@ -1,0 +1,6 @@
+# .pymolrc
+# Turn on sequence view
+set seq_view, 1
+
+# Set WD to desktop
+cd ~/Desktop/

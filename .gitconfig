@@ -1,0 +1,19 @@
+[push]
+	default = simple
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[user]
+	name = ababaian
+	email = ababaian@bccrc.ca
+[alias]
+	ignore = update-index --assume-unchanged
+	unignore = update-index --no-assume-unchanged
+	ignored = !git ls-files -v | grep "^[[:lower:]]"
+[credential]
+	helper = cache --timeout=20000
+[color]
+	ui = true
+[status]
+	submoduleSummary = true

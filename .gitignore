@@ -1,0 +1,35 @@
+# .gitignore template
+# ababaian
+#
+# ---------------------------
+# Tmp files 
+# ---------------------------
+*.swp
+*~
+
+# ---------------------------
+# Private / Local files 
+# ---------------------------
+local/*
+*LOCAL*
+*PRIVATE*
+*.pem
+
+# ---------------------------
+# R 
+# ---------------------------
+*.Rcheck
+*.Rhistory
+*.Rapp.history
+*.Rdata
+*.RData
+*.RDataTmp
+*.Rproj.user/
+*_cache/
+/cache/
+
+# ---------------------------
+# Other 
+# ---------------------------
+# Jupyter
+*.piynb_checkpoints*
