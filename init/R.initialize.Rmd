@@ -1,0 +1,68 @@
+---
+title: "R.initialization"
+---
+
+# Core R packages
+
+```{r echo = T, results="hide"}
+# Core
+install.packages("rmarkdown")
+install.packages("reshape2")
+
+
+# run on system
+# sudo apt-get install libcurl4-openssl-dev
+install.packages('curl')
+# sudo apt-get install libssl-dev
+install.packages('httr')
+
+# sudo apt-get install xml2
+install.packages("XML")
+
+# Development Tools
+install.packages("devtools")
+install.packages("roxygen2")
+
+# Plotting
+install.packages("ggplot2")
+install.packages("gplots")
+
+install.packages("RColorBrewer")
+install.packages("viridis")
+install.packages("ggsci")
+```
+
+# bioConductor
+
+```{r eval = F, results="hide"}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.10")
+
+# Core biology packages
+BiocManager::install("biomaRt")
+
+```
+
+# RNA-seq packages
+```{r eval = F, results="hide"}
+BiocManager::install("Rsamtools")
+BiocManager::install("edgeR")
+BiocManager::install("DESeq2")
+BiocManager::install("Glimma")
+
+```
+
+# Mass spec packages
+```{r}
+BiocManager::install("RforProteomics", dependencies = TRUE)
+
+BiocManager::install('lgatto/ProtGenerics')
+BiocManager::install('lgatto/rpx')
+#BiocManager::install('thomasp85/MSGFplus') # error
+#BiocManager::install('MSGFgui')
+
+# requires: sudo apt-get install libexpat1-dev
+BiocManager::install("rTANDEM")
+
+```
