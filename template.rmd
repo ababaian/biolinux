@@ -1,0 +1,33 @@
+---
+title:    "<Title>"
+project:  "<git project>"
+author:
+ - name:  "Artem Babaian"
+   git:   "@ababaian"
+   email: "ababaian@bccrc.ca"
+date:     "YYYYMMDD"
+output:  html_document
+---
+
+### Objectives 
+
+- 
+- 
+
+## Setup
+
+```{r setup}
+library(ggplot2)
+
+```
+
+## Functions
+```{r}
+```
+
+## Scripts
+
+```{r}
+
+```
+
