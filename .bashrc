@@ -6,17 +6,23 @@
 # bioinformatics software
 export PATH="/usr/bio/bin:$PATH"
 
+# hisat2
+export PATH="/usr/bio/tar/hisat2-2.1.0:$PATH"
+
 # ALIAS ===================================================
 # Find text in directory
 alias findtext='find ./ -type -f -exec grep -H $source {} \;'
 
 # SSH
 # GSC login
-alias gsc='ssh XXXXXX@ssh.gsc.ca'
+alias gsc='ssh ababaian@ssh.bcgsc.ca'
 
 # AWS login (Linux default)
 # glitch security group default
-alias ec2='ssh -i "/home/artem/.ssh/XXXXX.pem"'
+alias ec2='ssh -i "/home/artem/.ssh/glitch.pem"'
+
+# Enzo ssh
+alias enzo='ssh -X pi@168.192.1.66'
 
 # Tar Extract
 alias extract='tar -xvf'
@@ -88,3 +94,20 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 
 #X_X
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/bio/lib/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/bio/lib/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/usr/bio/lib/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/bio/lib/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+conda deactivate
+

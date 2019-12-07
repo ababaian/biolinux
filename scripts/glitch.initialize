@@ -96,7 +96,8 @@ cd /usr/bio/tar
   wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip
   unzip hisat2-2.1.0-Linux_x86_64.zip
   mv hisat2-2.1.0 /usr/bio/lib/
-  ## Not finished
+  # add hisat2 dir to PATH directory in bashrc
+  # export PATH="/usr/bio/tar/hisat2-2.1.0:$PATH"
 
 # Stringtie2
 cd /usr/bio/tar
@@ -147,12 +148,42 @@ cd /usr/bio/tar
   # license file in /usr/bio/init/PRIVATE/
   # pymolrc in      /usr/bio/init/.pymolrc
 
+# ImageJ / Fiji
+cd /usr/bio/tar
+  wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+  mv Fiji.app/ ../lib/
+
 # Zotero + Zotero FireFox Plugin
-# https://www.zotero.org/download/
-tar -xvf Zotero-5.0.77_linux-x86_64.tar.bz2 
-mv Zotero_linux-x86_64 /usr/bio/lib/
-ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero /usr/bio/bin/
-ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero.desktop ~/.local/share/applications/
+cd /usr/bio/tar
+  # https://www.zotero.org/download/
+  tar -xvf Zotero-5.0.77_linux-x86_64.tar.bz2 
+  mv Zotero_linux-x86_64 /usr/bio/lib/
+  ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero /usr/bio/bin/
+  ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero.desktop ~/.local/share/applications/
+
+# Programming =============================================
+# Python2
+sudo apt-get install python-dev
+sudo apt-get install python3-dev
+
+# pip
+sudo ap-get install python-pip
+
+# Conda
+# pre-req
+sudo apt-get install libgl1-mesa-glx libegl1-mesa \
+  libxrandr2 libxrandr2 libxss1 libxcursor1\
+  libxcomposite1 libasound2 libxi6 libxtst6
+
+cd /usr/bio/tar
+  wget https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh
+  bash ./Anaconda3-2019.10-Linux-x86_64.sh
+  # install path: /usr/bio/lib/anaconda3
+  # NOTE: .bashrc is modified by this installer scrip
+  echo "conda deactivate >> ~/.bashrc"
+
+# AWS CLI
+pip install awscli
 
 # Keyboard Shortcuts ======================================
 
@@ -169,7 +200,6 @@ ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero.desktop ~/.local/share/application
 
 # Ctrl+Alt+Del     : gnome-system-monitor
 
-
 # Firefox Add-ons =========================================
 
 # - NoScript
@@ -185,11 +215,3 @@ ln -s /usr/bio/lib/Zotero_linux-x86_64/zotero.desktop ~/.local/share/application
 # - DeepTools 2
 # - Cufflinks
 
-# Install HISAT2 into AMI image
-cd ~/software/
-wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip
-unzip hisat2*
-mv hisat2-2.1.0-Linux_x86_64.zip hisat2-2.1.0
-
-# add hisat2 dir to PATH
-export PATH="/home/ubuntu/software/hisat2-2.1.0:$PATH"
