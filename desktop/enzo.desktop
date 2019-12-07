@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[en_CA]=/usr/share/icons/reboot.png
+Name[en_CA]=Enzo
+Exec=xtightvncviewer -passwd /home/artem/.ssh/enzo 192.168.1.66:1 -compresslevel 5 -quality 8
+Name=Enzo
+Icon=/usr/share/icons/reboot.png
