@@ -1,0 +1,253 @@
+#!/bin/bash
+#
+# Glitch System Initalization - 240204
+# off of Ubuntu 22.01 LTS
+# (code + pseudocode)
+
+# Update repository info
+sudo apt-get update
+
+# Core utils
+sudo apt-get install -y git sl
+sudo apt-get install -y tar wget gzip unzip
+
+# biolinux Home Folder ====================================
+# ~/bio/
+cd ~
+  git clone https://github.com/ababaian/biolinux.git
+  mv biolinux bio; cd bio
+  mkdir bin
+  mkdir lib
+  mkdir tar
+  
+  # Add to PATH
+  echo '# Bioinformatics software path' >> ~/.bashrc
+  echo 'PATH="$PATH:$HOME/bio/bin"' >> ~/.bashrc
+  
+  
+# Software Centre =========================================
+# Command Line Essentials
+sudo apt-get install -y vim
+
+# Build essentials
+sudo apt-get install -y g++ gcc make cmake \
+                        zlib1g-dev libbz2-dev bzip2
+
+# Python
+sudo apt-get install -y python3-dev python3-pip
+
+# AWS CLI
+pip3 install awscli
+sudo apt install -y awscli
+
+# # R / RStudio =============================================
+# mkdir -p ~/bio/R; cd ~/bio/R
+# wget https://mirror.rcg.sfu.ca/mirror/CRAN/src/base/R-4/R-4.2.2.tar.gz
+# tar -xvf R*
+# cd R-4.2.2
+
+# # Add line to /etc/apt/sources.list
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key '95C0FAF38DB3CCAD0C080A7BDC78B2DDEABC47B7'
+
+# # Install dependencies for R (to build from source)
+# # in "Software and Updates" select "source code"
+# sudo apt-get update
+# sudo apt-get build-dep r-base
+
+# # Compile and install R with accelerted binaries
+# ./configure --enable-R-shlib --with-blas --with-lapack
+# make
+# sudo make install
+
+# wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2022.12.0-353-amd64.deb
+# # run deb
+# ## See `r.init.RmD` script for R package installations
+
+# # package dependencies
+# sudo apt-get install xml2
+# sudo apt-get install libxml2-dev
+# sudo apt-get install libssl-dev
+# sudo apt-get install libcurl4-openssl-dev
+# sudo apt-get install libpq-dev
+# # geo 
+# sudo apt-get install libgeos-dev
+# sudo apt-get install libudunits2-dev
+# sudo apt-get install libgdal-dev
+
+# BIOINFORMATICS ==========================================
+# install into
+# - /<user>/home/bio/
+# - /usr/bio/
+
+sudo mkdir /usr/bio
+sudo chown ubuntu /usr/bio
+mkdir /usr/bio/bin
+mkdir /usr/bio/tar
+mkdir /usr/bio/lib
+echo 'PATH="$PATH:/usr/bio/bin"' >> ~/.bashrc
+
+
+# HTSLIB and Samtools 1.16
+# dependencies
+sudo apt-get -y install gcc make \
+                libncurses5-dev \
+                libncursesw5-dev \
+                liblzma-dev
+
+cd ~/bio/tar
+wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
+  tar -vxjf htslib-1.9.tar.bz2
+  mv htslib-1.9 ../lib/
+  cd ../lib/htslib-1.9
+  ./configure --prefix=/home/ubuntu/bio
+  make all
+
+cd ~/bio/tar
+  wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
+  tar -vxjf samtools-1.9.tar.bz2
+  mv samtools-1.9 ../lib/
+  cd ../lib/samtools-1.9
+  ./configure --prefix=/home/ubuntu/bio
+  make all all-htslib
+  make install
+
+# Small Binary Utilities Download (NCBI)
+cd ~/bio/bin
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/wigToBigWig
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/fastqToFa
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit
+  chmod 755 ~/bio/bin/*
+
+#TMalign
+cd ~/bio/lib/
+  mkdir -p tmalign; cd tmalign
+  wget https://zhanggroup.org/TM-align/TMalign.cpp
+  wget https://zhanggroup.org/TM-align/readme.c++.txt
+  g++ -static -O3 -ffast-math -lm -o TMalign TMalign.cpp
+  mv TMalign ~/bio/bin/
+
+# seqkit
+sudo apt-get install -y seqkit
+
+# USEARCH
+cd ~/bio/tar/
+wget https://drive5.com/downloads/usearch11.0.667_i86linux32.gz
+gzip -dc usearch11.0.667_i86linux32.gz > ~/bio/bin/usearch
+chmod 755 ~/bio/bin/usearch
+
+# HMMER
+sudo apt-get install -y hmmer
+
+# DIAMOND2
+aws s3 cp s3://serratus-public/bin/diamond ~/bio/bin/
+
+# NCBI SRA Toolkit - system install
+cd ~/bio/tar
+  wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+  tar -xvf sratoolkit.current-ubuntu64.tar.gz 
+  mv sratoolkit.3.0.1-ubuntu64 ~/bio/lib/sratoolkit
+  ln -s ~/bio/lib/sratoolkit/bin/* ~/bio/bin/
+
+# # HISAT2
+# cd ~/bio/tar
+#   wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip
+#   unzip hisat2-2.1.0-Linux_x86_64.zip
+#   mv hisat2-2.1.0 ~/bio/lib/
+#   # add hisat2 dir to PATH directory in bashrc
+#   echo 'export PATH="$HOME/bio/tar/hisat2-2.1.0:$PATH"' >> ~/.bashrc
+#
+# # Stringtie2
+# cd ~/bio/tar
+#   wget http://ccb.jhu.edu/software/stringtie/dl/stringtie-2.0.4.Linux_x86_64.tar.gz
+#   tar -xvf stringtie-2.0.4.Linux_x86_64.tar.gz
+#   mv stringtie-2.0.4.Linux_x86_64 ../lib/
+#   ln -s ~/bio/lib/stringtie-2.0.4.Linux_x86_64/stringtie ~/bio/bin/
+#
+# # Bowtie2 (with SRA?)
+# cd ~/bio/tar
+#   sudo apt-get install libtbb-dev
+#   # https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.5.0/bowtie2-2.5.0-linux-x86_64.zip/download
+#   unzip bowtie2-2.5.0-linux-x86_64.zip
+#   mv bowtie2-2.5.0-linux-x86_64 ../lib/
+#   # bowtie2, bowtie2-align-s, bowtie2-align-l,
+#   # bowtie2-build, bowtie2-build-s, bowtie2-build-l, bowtie2-inspect,
+#   # bowtie2-inspect-s and bowtie2-inspect-l.
+#   ln -s ~/bio/lib/bowtie2-2.5.0-linux-x86_64/bowtie2* ~/bio/bin/
+#
+# # STAR Aligner
+# cd ~/bio/tar
+#   wget https://github.com/alexdobin/STAR/releases/download/2.7.10b/STAR_2.7.10b.zip
+#   unzip STAR_2.7.10b.tar.gz
+#   mv STAR_2.7.10b ~/bio/lib/STAR
+#   ln -s ~/bio/lib/STAR/Linux_x86_64/STAR* ~/bio/bin/
+#
+# # IGV 2.7.2
+# cd ~/bio/tar
+#   wget https://data.broadinstitute.org/igv/projects/downloads/2.15/IGV_2.15.4.zip
+#   unzip IGV_2.15.4.zip
+#   mv IGV_2.15.4 ~/bio/lib/igv
+#   ln -s ~/bio/lib/igv/igv.sh ~/bio/bin/igv
+#
+## GSEA v4.0.3
+#cd ~/bio/tar
+#  # http://software.broadinstitute.org/gsea/downloads.jsp
+#  unzip GSEA_Linux_4.0.3.zip
+#  mv GSEA_Linux_4.0.3 ../lib/
+#  ln -s ~/bio/lib/GSEA_Linux_4.0.3/gsea.sh ~/bio/bin/gsea
+#  ln -s ~/bio/lib/GSEA_Linux_4.0.3/gsea-cli.sh ~/bio/bin/gsea-cli
+
+# # INTERPRO 5.60-92
+# cd ~/bio/tar/
+#   wget https://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/5/5.60-92.0/interproscan-5.60-92.0-64-bit.tar.gz
+#   tar -xvf interproscan-5.60-92.0-64-bit.tar.gz
+#   mv interproscan-5.60-92.0-64-bit/interproscan-5.60-92.0-64 ~/bio/lib/interproscan-5.60
+#   cd ~/bio/lib/interproscan-5.60
+#   python3 setup.py interproscan.properties
+  
+#   ln -s $PWD/interproscan.sh /home/ab/bio/bin/interproscan
+
+# INFERNAL 1.1.4
+cd ~/bio/tar/
+  wget http://eddylab.org/infernal/infernal-1.1.4.tar.gz
+  tar -xvf infernal-1.1.4.tar.gz
+  mv infernal-1.1.4 ../lib/
+  cd ~/bio/lib/infernal-1.1.4
+  ./configure --prefix /home/ubuntu/bio/bin
+  make
+  make check                 # optional: run automated tests
+  make install               # optional: install Infernal programs, man pages
+  #(cd hmmer; make install)   # optional: install HMMER programs
+  (cd easel; make install)   # optional: install Easel tools
+
+# EMBOSS 6.6.0
+sudo apt-get install -y emboss
+
+# muscle v3.8.1551
+sudo apt-get install -y muscle
+
+# HH-suite
+sudo apt-get install -y hhsuite
+#cd ~/bio/lib/
+#  git clone https://github.com/soedinglab/hh-suite.git
+#  mkdir -p hh-suite/build && cd hh-suite/build
+#  cmake -DCMAKE_INSTALL_PREFIX=. ..
+#  make -j 4 && make install
+#  echo 'PATH="/ab/home/bio/lib/hh-suite/build/bin:/ab/home/bio/lib/hh-suite/scripts:$PATH"' >> ~/.bashrc
+
+# Spades
+cd ~/bio/tar/
+    wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5.tar.gz
+    tar -xzf SPAdes-3.15.5.tar.gz
+    cd SPAdes-3.15.5
+    PREFIX=/home/ubuntu/bio/ ./spades_compile.sh
+
+# Programming =============================================
+
+# DOTFILES ================================================
+
+# .bashrc
+# .vimrc
+# .ssh/config
+# /etc/openvpn/client/client.opvn
