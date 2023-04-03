@@ -209,17 +209,18 @@ cd ~/bio/tar
 #   ln -s $PWD/interproscan.sh /home/ab/bio/bin/interproscan
 
 # INFERNAL 1.1.4
-cd ~/bio/tar/
-  wget http://eddylab.org/infernal/infernal-1.1.4.tar.gz
-  tar -xvf infernal-1.1.4.tar.gz
-  mv infernal-1.1.4 ../lib/
-  cd ~/bio/lib/infernal-1.1.4
-  ./configure --prefix /home/ubuntu/bio/bin
-  make
-  make check                 # optional: run automated tests
-  make install               # optional: install Infernal programs, man pages
-  #(cd hmmer; make install)   # optional: install HMMER programs
-  (cd easel; make install)   # optional: install Easel tools
+# cd ~/bio/tar/
+#   wget http://eddylab.org/infernal/infernal-1.1.4.tar.gz
+#   tar -xvf infernal-1.1.4.tar.gz
+#   mv infernal-1.1.4 ../lib/
+#   cd ~/bio/lib/infernal-1.1.4
+#   ./configure --prefix /home/ubuntu/bio/bin
+#   make
+#   make check                 # optional: run automated tests
+#   make install               # optional: install Infernal programs, man pages
+#   #(cd hmmer; make install)   # optional: install HMMER programs
+#   (cd easel; make install)   # optional: install Easel tools
+sudo apt-get install -y infernal
 
 # EMBOSS 6.6.0
 sudo apt-get install -y emboss

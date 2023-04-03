@@ -8,8 +8,10 @@ title: "R.initialization"
 # Core
 install.packages("rmarkdown")
 install.packages("reshape2")
+install.packages("data.table")
+```
 
-
+```{r echo = T, results="hide"}
 # run on system
 # sudo apt-get install libcurl4-openssl-dev
 install.packages('curl')
@@ -35,16 +37,19 @@ install.packages("ggsci")
 # bioConductor
 
 ```{r eval = F, results="hide"}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(version = "3.10")
+install.packages("BiocManager")
+
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install(version = "3.10")
 
 # Core biology packages
 BiocManager::install("biomaRt")
-
+BiocManager::install("GenomicRanges")
 ```
 
 # RNA-seq packages
+
 ```{r eval = F, results="hide"}
 BiocManager::install("Rsamtools")
 BiocManager::install("edgeR")
@@ -54,6 +59,7 @@ BiocManager::install("Glimma")
 ```
 
 # Mass spec packages
+
 ```{r}
 BiocManager::install("RforProteomics", dependencies = TRUE)
 
