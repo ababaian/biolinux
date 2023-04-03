@@ -1,0 +1,393 @@
+#!/bin/bash
+#
+# Glitch System Initalization - 240204
+# off of Ubuntu 22.01 LTS
+# (code + pseudocode)
+
+# Update repository info
+sudo apt-get update
+
+# Core utils
+sudo apt-get install git
+sudo apt-get install sl
+
+# Interface utils
+sudo apt install gnome-tweaks gnome-shell-extension-manager chrome-gnome-shell
+sudo apt-get install xtightvncviewer
+
+# Gnome-Shell Extensions
+# alphabetical app grid
+# no activities button
+# workspace indicator
+# workspace-matrix
+
+# Move dock to bottom
+#gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
+# show all workspaces on app switch
+gsettings set org.gnome.shell.app-switcher current-workspace-only false
+
+
+# biolinux Home Folder ====================================
+# ~/bio/
+cd ~
+  git clone https://github.com/ababaian/biolinux.git
+  mv biolinux bio; cd bio
+
+  mkdir bin
+  mkdir lib
+  mkdir tar
+  
+  # Add to PATH
+  echo '# Bioinformatics software path' >> ~/.bashrc
+  echo 'PATH="$PATH:$HOME/bio/bin"' >> ~/.bashrc
+#  echo '# Bioinformatics software path' >> ~/.zshrc
+#  echo 'PATH="$PATH:$HOME/bio/bin"' >> ~/.zshrc
+  
+  
+# Software Centre =========================================
+# Command Line Essentials
+sudo apt-get install vim
+
+# Software installed from Ubuntu Software Centre
+# - Chromium
+# - Sublime
+# - Inkscape
+# - GIMP
+# - LibreOffice
+# - PlayOnLinux
+# - VLC
+# - Transmission
+# - Skype
+# - Slack
+# - Xournal
+# - Zoom
+
+# Jupyter initializatoin
+
+# config not working
+jupyter-lab --generate-config
+pip install bash_kernel
+echo "c.NotebookApp.use_redirect_file = False" >> /home/ab/.jupyter/jupyter_lab_config.py
+
+# custom desktop icon for jupyter
+# # jupyter-lab notebook/ --browser chromium
+ln -s ~/bio/desktop/Jupyter.desktop ~/.local/share/applications/
+
+
+# R / RStudio =============================================
+mkdir -p ~/bio/R; cd ~/bio/R
+wget https://mirror.rcg.sfu.ca/mirror/CRAN/src/base/R-4/R-4.2.2.tar.gz
+tar -xvf R*
+cd R-4.2.2
+
+# Add line to /etc/apt/sources.list
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key '95C0FAF38DB3CCAD0C080A7BDC78B2DDEABC47B7'
+
+# Install dependencies for R (to build from source)
+# in "Software and Updates" select "source code"
+sudo apt-get update
+sudo apt-get build-dep r-base
+
+# Compile and install R with accelerted binaries
+./configure --enable-R-shlib --with-blas --with-lapack
+make
+sudo make install
+
+wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2022.12.0-353-amd64.deb
+# run deb
+## See `r.init.RmD` script for R package installations
+
+# package dependencies
+sudo apt-get install xml2
+sudo apt-get install libxml2-dev
+sudo apt-get install libssl-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libpq-dev
+# geo 
+sudo apt-get install libgeos-dev
+sudo apt-get install libudunits2-dev
+sudo apt-get install libgdal-dev
+
+sudo apt-get install cmake
+
+
+# BIOINFORMATICS ==========================================
+# install into
+# - /<user>/home/bio/
+# - /usr/bio/
+
+sudo mkdir /usr/bio
+sudo chown ab /usr/bio
+mkdir /usr/bio/bin
+mkdir /usr/bio/tar
+mkdir /usr/bio/lib
+echo 'PATH="$PATH:/usr/bio/bin"' >> ~/.bashrc
+
+# Samtools 1.16
+cd ~/bio/tar
+# get at https://sourceforge.net/projects/samtools/files/
+  tar -xvf samtools-1.16.1.tar.bz2
+  mv samtools-1.16.1 ../lib/
+  cd ../lib/samtools-1.16.1 # Within the unpacked release directory
+  ./configure --prefix=/home/ab/bio
+  make all all-htslib
+  make install install-htslib
+
+# Small Binary Utilities Download (NCBI)
+cd ~/bio/bin
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/wigToBigWig
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/fastqToFa
+  wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/faSplit
+
+# PyMol 2.5.0
+sudo apt-get install pymol
+
+# Jalview
+sudo apt-get install jalview
+
+#TMalign
+cd ~/bio/lib/
+  mkdir -p tmalign; cd tmalign
+  wget https://zhanggroup.org/TM-align/TMalign.cpp
+  wget https://zhanggroup.org/TM-align/readme.c++.txt
+  g++ -static -O3 -ffast-math -lm -o TMalign TMalign.cpp
+  mv TMalign ~/bio/bin/
+
+
+# seqkit
+sudo apt-get install seqkit
+
+# USEARCH
+cd ~/bio/tar/
+wget https://drive5.com/downloads/usearch11.0.667_i86linux32.gz
+gzip -dc usearch11.0.667_i86linux32.gz > ~/bio/bin/usearch
+chmod 755 ~/bio/bin/usearch
+
+# HMMER
+sudo apt-get install hmmer
+
+# DIAMOND2
+aws s3 cp s3://serratus-public/bin/diamond ~/bio/bin/
+
+# Dendroscope
+cd ~/bio/tar/
+  wget https://software-ab.cs.uni-tuebingen.de/download/dendroscope/Dendroscope_unix_3_8_5.sh
+  bash https://software-ab.cs.uni-tuebingen.de/download/dendroscope/Dendroscope_unix_3_8_5.sh
+  # install into
+  # ~/bio/lib/
+  # ~/bio/bin/
+
+# Zotero + Zotero FireFox Plugin
+cd /usr/bio/tar
+  # https://www.zotero.org/download/
+  tar -xvf Zotero-6.0.19_linux-x86_64.tar.bz2 
+  mv Zotero_linux-x86_64 ~/bio/lib/
+  ln -s ~/bio/lib/Zotero_linux-x86_64/zotero ~/bio/bin/
+  ln -s ~/bio/lib/Zotero_linux-x86_64/zotero.desktop ~/.local/share/applications/
+
+# NCBI SRA Toolkit - system install
+cd ~/bio/tar
+  wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+  tar -xvf sratoolkit.current-ubuntu64.tar.gz 
+  mv sratoolkit.3.0.1-ubuntu64 ~/bio/lib/sratoolkit
+  ln -s ~/bio/lib/sratoolkit/bin/* ~/bio/bin/
+
+## Download TCGA-GDC File Transfer Tool (ubuntu)
+#cd /usr/bio/tar/
+#  wget https://gdc.cancer.gov/system/files/authenticated%20user/0/gdc-client_v1.4.0_Ubuntu_x64.zip
+#  unzip gdc-client_v1.4.0_Ubuntu_x64.zip
+#  mv gdc-client /usr/bio/bin/
+
+# HISAT2
+cd ~/bio/tar
+  wget ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-Linux_x86_64.zip
+  unzip hisat2-2.1.0-Linux_x86_64.zip
+  mv hisat2-2.1.0 ~/bio/lib/
+  # add hisat2 dir to PATH directory in bashrc
+  echo 'export PATH="$HOME/bio/tar/hisat2-2.1.0:$PATH"' >> ~/.bashrc
+
+# Stringtie2
+cd ~/bio/tar
+  wget http://ccb.jhu.edu/software/stringtie/dl/stringtie-2.0.4.Linux_x86_64.tar.gz
+  tar -xvf stringtie-2.0.4.Linux_x86_64.tar.gz
+  mv stringtie-2.0.4.Linux_x86_64 ../lib/
+  ln -s ~/bio/lib/stringtie-2.0.4.Linux_x86_64/stringtie ~/bio/bin/
+
+# Bowtie2 (with SRA?)
+cd ~/bio/tar
+  sudo apt-get install libtbb-dev
+  # https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.5.0/bowtie2-2.5.0-linux-x86_64.zip/download
+  unzip bowtie2-2.5.0-linux-x86_64.zip
+  mv bowtie2-2.5.0-linux-x86_64 ../lib/
+  # bowtie2, bowtie2-align-s, bowtie2-align-l,
+  # bowtie2-build, bowtie2-build-s, bowtie2-build-l, bowtie2-inspect,
+  # bowtie2-inspect-s and bowtie2-inspect-l.
+  ln -s ~/bio/lib/bowtie2-2.5.0-linux-x86_64/bowtie2* ~/bio/bin/
+
+# STAR Aligner
+cd ~/bio/tar
+  wget https://github.com/alexdobin/STAR/releases/download/2.7.10b/STAR_2.7.10b.zip
+  unzip STAR_2.7.10b.tar.gz
+  mv STAR_2.7.10b ~/bio/lib/STAR
+  ln -s ~/bio/lib/STAR/Linux_x86_64/STAR* ~/bio/bin/
+
+# IGV 2.7.2
+cd ~/bio/tar
+  wget https://data.broadinstitute.org/igv/projects/downloads/2.15/IGV_2.15.4.zip
+  unzip IGV_2.15.4.zip
+  mv IGV_2.15.4 ~/bio/lib/igv
+  ln -s ~/bio/lib/igv/igv.sh ~/bio/bin/igv
+
+## GSEA v4.0.3
+#cd ~/bio/tar
+#  # http://software.broadinstitute.org/gsea/downloads.jsp
+#  unzip GSEA_Linux_4.0.3.zip
+#  mv GSEA_Linux_4.0.3 ../lib/
+#  ln -s ~/bio/lib/GSEA_Linux_4.0.3/gsea.sh ~/bio/bin/gsea
+#  ln -s ~/bio/lib/GSEA_Linux_4.0.3/gsea-cli.sh ~/bio/bin/gsea-cli
+
+# ImageJ / Fiji
+cd ~/bio/tar
+  wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+  mv Fiji.app/ ../lib/
+
+# INTERPRO 5.60-92
+cd ~/bio/tar/
+  wget https://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/5/5.60-92.0/interproscan-5.60-92.0-64-bit.tar.gz
+  tar -xvf interproscan-5.60-92.0-64-bit.tar.gz
+  mv interproscan-5.60-92.0-64-bit/interproscan-5.60-92.0-64 ~/bio/lib/interproscan-5.60
+  cd ~/bio/lib/interproscan-5.60
+  python3 setup.py interproscan.properties
+  
+  ln -s $PWD/interproscan.sh /home/ab/bio/bin/interproscan
+
+
+# INFERNAL 1.1.4
+cd ~/bio/tar/
+  wget http://eddylab.org/infernal/infernal-1.1.4.tar.gz
+  tar -xvf infernal-1.1.4.tar.gz
+  mv infernal-1.1.4 ../lib/
+  cd ~/bio/lib/infernal-1.1.4
+  ./configure --prefix /home/ab/bio/bin
+  make
+  make check                 # optional: run automated tests
+  make install               # optional: install Infernal programs, man pages
+  #(cd hmmer; make install)   # optional: install HMMER programs
+  (cd easel; make install)   # optional: install Easel tools
+
+# EMBOSS 6.6.0
+sudo apt-get install emboss
+
+# muscle v3.8.1551
+sudo apt-get install muscle
+
+# HH-suite
+sudo apt-get install hhsuite
+#cd ~/bio/lib/
+#  git clone https://github.com/soedinglab/hh-suite.git
+#  mkdir -p hh-suite/build && cd hh-suite/build
+#  cmake -DCMAKE_INSTALL_PREFIX=. ..
+#  make -j 4 && make install
+#  echo 'PATH="/ab/home/bio/lib/hh-suite/build/bin:/ab/home/bio/lib/hh-suite/scripts:$PATH"' >> ~/.bashrc
+
+# Spades
+cd ~/bio/tar/
+    wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5.tar.gz
+    tar -xzf SPAdes-3.15.5.tar.gz
+    cd SPAdes-3.15.5
+    PREFIX=/home/ab/bio/ ./spades_compile.sh
+
+# Programming =============================================
+# Python2
+#sudo apt-get install python-dev
+sudo apt-get install python3-dev
+
+# pip
+sudo apt-get install python3-pip
+
+# Conda
+# pre-req
+sudo apt-get install libgl1-mesa-glx libegl1-mesa \
+  libxrandr2 libxrandr2 libxss1 libxcursor1\
+  libxcomposite1 libasound2 libxi6 libxtst6
+cd ~/bio/tar
+
+  wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh
+  bash ./Anaconda3-2022.10-Linux-x86_64.sh
+  # install path: ~/bio/lib/anaconda3
+  # NOTE: .bashrc is modified by this installer script
+  echo "conda deactivate >> ~/.bashrc"
+  #echo "conda deactivate >> ~/.zshrc"
+
+# AWS CLI
+pip3 install awscli
+sudo apt install awscli
+
+# Disable tracker3
+systemctl --user mask tracker-extract-3.service \
+  tracker-miner-fs-3.service tracker-miner-rss-3.service \
+  tracker-writeback-3.service tracker-xdg-portal-3.service \
+  tracker-miner-fs-control-3.service
+tracker3 reset -s -r
+
+## to re-enable; then reboot
+#systemctl --user unmask tracker-extract-3.service \
+#  tracker-miner-fs-3.service tracker-miner-rss-3.service \
+#  tracker-writeback-3.service tracker-xdg-portal-3.service \
+#  tracker-miner-fs-control-3.service
+
+# Keyboard Shortcuts ======================================
+
+# CTRL+`           : terminal
+# CTRL+Esc         : retro-terminal
+# Shift+Ctrl+Up    : Move to workspace up
+# Shift+Ctrl+Down  : Move to workspace down
+# Shift+Ctrl+Left  : Move window to workspace up
+# Shift+Ctrl+Right : Move window to workspace down
+# Shift+Alt+Left    : Split left
+# Shift+Alt+Right   : Split right
+# Shift+Alt+Down    : Restore Window
+# Shift+Alt+Up      : Maximize Window
+
+# Ctrl+Alt+Del     : gnome-system-monitor
+
+# Firefox Add-ons =========================================
+
+# - NoScript
+# - HTTPS Everywhere
+# - Privacy Badger (testing)
+# - Zotero Connector
+# - uBlock Origin
+
+# Various =================================================
+# Office: https://gist.github.com/raelgc/4ccc023830bfd12c0227
+sudo apt-get install playonlinux samba winbind
+
+# pgAdmin4
+# Install the public key for the repository (if not done previously):
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+# Create the repository configuration file:
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+
+# Install for both desktop and web modes:
+sudo apt install pgadmin4
+
+# Configure the webserver, if you installed pgadmin4-web:
+sudo /usr/pgadmin4/bin/setup-web.sh
+
+# TODO ====================================================
+
+# - Aspera
+# - GATK
+# - DeepTools 2
+# - Cufflinks
+
+# DOTFILES ================================================
+
+# .bashrc
+# .pymolrc
+# .vimrc
+# .ssh/config
+# /etc/openvpn/client/client.opvn
